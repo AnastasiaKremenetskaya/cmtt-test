@@ -1,0 +1,80 @@
+version: '3.7'
+services:
+  #PHP Service
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: cmtt
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: cmtt
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www/
+      - ./docker-compose/php-fpm/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - cmtt-network
+
+  #Nginx Service
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '80:80'
+    networks:
+      - cmtt-network
+    volumes:
+      - ./:/var/www/
+      - ./docker-compose/nginx/conf.d/:/etc/nginx/conf.d/
+
+
+  #MySQL Service
+  db:
+    platform: linux/x86_64
+    image: 'mysql:5.6'
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      SERVICE_NAME: mysql
+    volumes:
+      - cmttdbdata:/var/lib/mysql/
+      - ./docker-compose/mysql/mysql.conf:/etc/mysql/mysql.conf
+    networks:
+      - cmtt-network
+
+  # phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - '8081:80'
+    environment:
+      PMA_HOST: db
+      PMA_PORT: '${DB_PORT}'
+      PMA_USER: root
+      PMA_PASSWORD: '${DB_PASSWORD}'
+    networks:
+      - cmtt-network
+
+#Docker Networks
+networks:
+  cmtt-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  cmttdbdata:
+    driver: local
