@@ -6,6 +6,7 @@ use App\Gateways\AdGateway;
 use App\Http\Requests\AdRequest;
 use App\Http\Responses\AdResponse;
 use App\Services\AdService;
+use Exception;
 
 class AdController
 {
@@ -19,19 +20,22 @@ class AdController
     }
 
     /**
-     * Открутка объявления
+     * Show most relevant ad
      *
      * @return string|null
      */
     public function relevant(): ?string
     {
-        $ad = (new AdService())->getRelevantAd();
-
-        return $this->adResponse->getSuccessResponse($ad);
+        try {
+            $ad = (new AdService())->getRelevantAd();
+            return $this->adResponse->getSuccessResponse($ad);
+        } catch (Exception $e) {
+            return $this->adResponse->getErrorResponse([$e->getMessage()]);
+        }
     }
 
     /**
-     * Создание объявления
+     * Create ad
      *
      * @return string|null
      */
@@ -42,15 +46,19 @@ class AdController
         if ($validation->fails()) {
             return $this->adResponse->getErrorResponse($validation->errors()->all());
         } else {
-            $validData = $validation->getValidData();
-            $ad = (new AdGateway())->create($validData);
+            try {
+                $validData = $validation->getValidData();
+                $ad = (new AdGateway())->create($validData);
 
-            return $this->adResponse->getSuccessResponse($ad);
+                return $this->adResponse->getSuccessResponse($ad);
+            } catch (Exception $e) {
+                return $this->adResponse->getErrorResponse([$e->getMessage()]);
+            }
         }
     }
 
     /**
-     * Редактирование объявления
+     * Edit ad
      *
      * @param mixed $id
      * @return string|null
@@ -64,10 +72,14 @@ class AdController
         if ($validation->fails()) {
             return $this->adResponse->getErrorResponse($validation->errors()->all());
         } else {
-            $validData = $validation->getValidData();
-            $ad = (new AdGateway())->update($id, $validData);
+            try {
+                $validData = $validation->getValidData();
+                $ad = (new AdGateway())->update($id, $validData);
 
-            return $this->adResponse->getSuccessResponse($ad);
+                return $this->adResponse->getSuccessResponse($ad);
+            } catch (Exception $e) {
+                return $this->adResponse->getErrorResponse([$e->getMessage()]);
+            }
         }
     }
 }

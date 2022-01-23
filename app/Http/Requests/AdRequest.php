@@ -8,8 +8,10 @@ use Rakit\Validation\Validator;
 class AdRequest
 {
     /**
-     * AdController constructor.
-     * @param ` $db
+     * AdController constructor
+     *
+     * @param $data
+     * @return Validation
      */
     public function validate($data): Validation
     {

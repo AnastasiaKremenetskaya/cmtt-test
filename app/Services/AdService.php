@@ -14,6 +14,11 @@ class AdService
         $this->adGateway = new AdGateway();
     }
 
+    /**
+     * Get most relevant ad
+     *
+     * @return Ad
+     */
     public function getRelevantAd(): Ad
     {
         $ad = $this->adGateway->getRelevant();

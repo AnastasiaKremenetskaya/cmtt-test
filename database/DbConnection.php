@@ -2,13 +2,17 @@
 
 namespace Database;
 
+use App\Exceptions\InternalServerException;
+use Exception;
 use PDO;
-use PDOException;
 
 class DbConnection
 {
     private $connection;
 
+    /**
+     * @throws InternalServerException
+     */
     public function __construct()
     {
         $host = 'db';
@@ -26,11 +30,11 @@ class DbConnection
 
         try {
             $this->connection = new PDO($dsn, $user, $password, $opt);
-        } catch (PDOException $e) {
-            die('Unable to connect DB: ' . $e->getMessage());
+        } catch (Exception $e) {
+            throw new InternalServerException();
         }
-
     }
+
     public function get(): PDO
     {
         return $this->connection;

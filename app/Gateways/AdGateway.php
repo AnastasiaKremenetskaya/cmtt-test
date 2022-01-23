@@ -3,8 +3,10 @@
 namespace App\Gateways;
 
 use App\Exceptions\Gateway\RecordNotFoundException;
+use App\Exceptions\InternalServerException;
 use App\Models\Ad;
 use Database\DbConnection;
+use Exception;
 use PDO;
 use PDOException;
 
@@ -29,6 +31,7 @@ class AdGateway
      *
      * @param int $id
      * @return Ad
+     * @throws InternalServerException
      * @throws RecordNotFoundException
      */
     public function getById(int $id): Ad
@@ -45,7 +48,7 @@ class AdGateway
             }
             return new Ad($adData);
         } catch (PDOException $e) {
-            exit($e->getMessage());
+            throw new InternalServerException();
         }
     }
 
@@ -54,6 +57,7 @@ class AdGateway
      *
      * @param array $data
      * @return Ad
+     * @throws InternalServerException
      */
     public function create(array $data): Ad
     {
@@ -71,8 +75,8 @@ class AdGateway
             $id = $this->db->lastInsertId();
 
             return $this->getById($id);
-        } catch (PDOException $e) {
-            exit($e->getMessage());
+        } catch (Exception $e) {
+            throw new InternalServerException();
         }
     }
 
@@ -82,6 +86,7 @@ class AdGateway
      * @param int $id
      * @param array $data
      * @return Ad
+     * @throws InternalServerException
      */
     public function update(int $id, array $data): Ad
     {
@@ -107,8 +112,8 @@ class AdGateway
             $statement->execute();
 
             return $this->getById($id);
-        } catch (PDOException $e) {
-            exit($e->getMessage());
+        } catch (Exception $e) {
+            throw new InternalServerException();
         }
     }
 
@@ -116,6 +121,8 @@ class AdGateway
      * Get most relevant ad
      *
      * @return Ad
+     * @throws InternalServerException
+     * @throws RecordNotFoundException
      */
     public function getRelevant(): Ad
     {
@@ -125,10 +132,14 @@ class AdGateway
 
         try {
             $statement = $this->db->query($statement);
+            $adData = $statement->fetchAll()[0];
 
+            if (is_null($adData)) {
+                throw new RecordNotFoundException(['status' => 'relevant']);
+            }
             return new Ad($statement->fetchAll()[0]);
         } catch (PDOException $e) {
-            exit($e->getMessage());
+            throw new InternalServerException();
         }
     }
 
@@ -137,6 +148,7 @@ class AdGateway
      *
      * @param int $id
      * @return Ad
+     * @throws InternalServerException
      */
     public function decreaseLimit(int $id): Ad
     {
@@ -150,8 +162,8 @@ class AdGateway
             $statement->execute();
 
             return new Ad($statement->fetchAll()[0]);
-        } catch (PDOException $e) {
-            exit($e->getMessage());
+        } catch (Exception $e) {
+            throw new InternalServerException();
         }
     }
 }
