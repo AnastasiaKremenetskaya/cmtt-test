@@ -1,6 +1,6 @@
 # Ad API
 
-## Как запустить
+## Как развернуть проект
 
 - Выкачать проект
 - Скопировать файл .env.example в .env и поправить в новом файле настройки под себя
@@ -9,4 +9,5 @@
 
 В корне докер-контейнера выполнить:
 - composer install
+- composer dump-autoload
 - ./vendor/bin/doctrine-migrations migrate
