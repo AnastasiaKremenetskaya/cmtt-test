@@ -2,6 +2,7 @@
 
 namespace App\Gateways;
 
+use App\Exceptions\Gateway\RecordNotFoundException;
 use App\Models\Ad;
 use Database\DbConnection;
 use PDO;
@@ -10,19 +11,25 @@ use PDOException;
 class AdGateway
 {
     private $db;
-    private $tableName;
-    private $fillableProperties;
+    private $tableName = 'ads';
+    private $fillable = [
+        'text',
+        'price',
+        'limit',
+        'banner',
+    ];
 
     public function __construct()
     {
         $this->db = (new DbConnection())->get();
-        $this->tableName = Ad::getTableName();
-        $this->fillableProperties = Ad::getFillable();
     }
 
     /**
+     * Get model by id
+     *
      * @param int $id
      * @return Ad
+     * @throws RecordNotFoundException
      */
     public function getById(int $id): Ad
     {
@@ -32,7 +39,11 @@ class AdGateway
             $statement = $this->db->prepare($statement);
             $statement->bindValue(':id', $id, PDO::PARAM_INT);
             $statement->execute();
-            return new Ad($statement->fetchAll()[0]);
+            $adData = $statement->fetchAll()[0];
+            if (is_null($adData)) {
+                throw new RecordNotFoundException(['id' => $id]);
+            }
+            return new Ad($adData);
         } catch (PDOException $e) {
             exit($e->getMessage());
         }
@@ -46,14 +57,14 @@ class AdGateway
      */
     public function create(array $data): Ad
     {
-        $properties = '`' . implode("`,`", $this->fillableProperties) . '`';
-        $values = ':' . implode(", :", $this->fillableProperties);
+        $properties = '`' . implode("`,`", $this->fillable) . '`';
+        $values = ':' . implode(", :", $this->fillable);
 
         $statement = "INSERT INTO $this->tableName ($properties) VALUES ($values)";
 
         try {
             $statement = $this->db->prepare($statement);
-            foreach ($this->fillableProperties as $fillableProperty) {
+            foreach ($this->fillable as $fillableProperty) {
                 $statement->bindValue(":$fillableProperty", $data[$fillableProperty] ?? null);
             }
             $statement->execute();
@@ -76,8 +87,8 @@ class AdGateway
     {
         $statement = "UPDATE $this->tableName SET ";
 
-        $lastFillableKey = count(($this->fillableProperties)) - 1;
-        foreach ($this->fillableProperties as $key => $fillableProperty) {
+        $lastFillableKey = count(($this->fillable)) - 1;
+        foreach ($this->fillable as $key => $fillableProperty) {
             $statement .= "`$fillableProperty` = :$fillableProperty";
             if ($key != $lastFillableKey) {
                 $statement .= ",";
@@ -90,7 +101,7 @@ class AdGateway
             $statement = $this->db->prepare($statement);
 
             $statement->bindValue(":id", $id);
-            foreach ($this->fillableProperties as $fillableProperty) {
+            foreach ($this->fillable as $fillableProperty) {
                 $statement->bindValue(":$fillableProperty", $data[$fillableProperty] ?? null);
             }
             $statement->execute();
@@ -102,6 +113,8 @@ class AdGateway
     }
 
     /**
+     * Get most relevant ad
+     *
      * @return Ad
      */
     public function getRelevant(): Ad
@@ -123,8 +136,9 @@ class AdGateway
      * Decrease impressions limit
      *
      * @param int $id
+     * @return Ad
      */
-    public function decreaseLimit(int $id): void
+    public function decreaseLimit(int $id): Ad
     {
         $statement = "
             UPDATE $this->tableName 
@@ -134,6 +148,8 @@ class AdGateway
             $statement = $this->db->prepare($statement);
             $statement->bindValue(':id', $id);
             $statement->execute();
+
+            return new Ad($statement->fetchAll()[0]);
         } catch (PDOException $e) {
             exit($e->getMessage());
         }

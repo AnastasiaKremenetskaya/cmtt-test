@@ -4,21 +4,13 @@ namespace App\Models;
 
 class Ad
 {
-    private static $tableName = 'ads';
-    private static $fillable = [
-        'text',
-        'price',
-        'limit',
-        'banner',
-    ];
-
     private $id;
     private $text;
     private $price;
     private $limit;
     private $banner;
 
-    public function __construct(array $data)
+    public function __construct(array $data = null)
     {
         $this->id = $data['id'];
         $this->text = $data['text'];
@@ -65,25 +57,5 @@ class Ad
     public function getLimit()
     {
         return $this->limit;
-    }
-
-    /**
-     * Get the table associated with the model.
-     *
-     * @return string
-     */
-    public static function getTableName(): string
-    {
-        return self::$tableName;
-    }
-
-    /**
-     * Get fillable properties
-     *
-     * @return string[]
-     */
-    public static function getFillable(): array
-    {
-        return self::$fillable;
     }
 }
