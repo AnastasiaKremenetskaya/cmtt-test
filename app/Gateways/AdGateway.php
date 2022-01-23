@@ -10,23 +10,21 @@ use PDOException;
 class AdGateway
 {
     private $db;
-    private $model;
     private $tableName;
     private $fillableProperties;
 
     public function __construct()
     {
         $this->db = (new DbConnection())->get();
-        $this->model = new Ad();
-        $this->tableName = $this->model->getTableName();
-        $this->fillableProperties = $this->model->getFillable();
+        $this->tableName = Ad::getTableName();
+        $this->fillableProperties = Ad::getFillable();
     }
 
     /**
      * @param int $id
-     * @return array
+     * @return Ad
      */
-    public function getById(int $id): array
+    public function getById(int $id): Ad
     {
         $statement = "SELECT * FROM $this->tableName WHERE `id` = :id";
 
@@ -34,7 +32,7 @@ class AdGateway
             $statement = $this->db->prepare($statement);
             $statement->bindValue(':id', $id, PDO::PARAM_INT);
             $statement->execute();
-            return $statement->fetchAll()[0];
+            return new Ad($statement->fetchAll()[0]);
         } catch (PDOException $e) {
             exit($e->getMessage());
         }
@@ -44,9 +42,9 @@ class AdGateway
      * Create model with the given attributes
      *
      * @param array $data
-     * @return array
+     * @return Ad
      */
-    public function create(array $data): array
+    public function create(array $data): Ad
     {
         $properties = '`' . implode("`,`", $this->fillableProperties) . '`';
         $values = ':' . implode(", :", $this->fillableProperties);
@@ -72,9 +70,9 @@ class AdGateway
      *
      * @param int $id
      * @param array $data
-     * @return array
+     * @return Ad
      */
-    public function update(int $id, array $data): array
+    public function update(int $id, array $data): Ad
     {
         $statement = "UPDATE $this->tableName SET ";
 
@@ -104,9 +102,9 @@ class AdGateway
     }
 
     /**
-     * @return array
+     * @return Ad
      */
-    public function getRelevant(): array
+    public function getRelevant(): Ad
     {
         $statement = "SELECT `id`, `text`, `banner` FROM $this->tableName
             WHERE `limit` > 0 
@@ -114,7 +112,8 @@ class AdGateway
 
         try {
             $statement = $this->db->query($statement);
-            return $statement->fetchAll()[0];
+
+            return new Ad($statement->fetchAll()[0]);
         } catch (PDOException $e) {
             exit($e->getMessage());
         }
