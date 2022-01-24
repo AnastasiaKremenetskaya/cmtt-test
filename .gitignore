@@ -3,3 +3,4 @@
 /.composer/
 .idea/
 /.bash_history
+/.cache/

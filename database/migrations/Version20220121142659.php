@@ -12,6 +12,11 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20220121142659 extends AbstractMigration
 {
+    /**
+     * @return string
+     *
+     * @psalm-return 'Create ads table'
+     */
     public function getDescription(): string
     {
         return 'Create ads table';

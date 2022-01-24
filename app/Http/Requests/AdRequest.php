@@ -25,7 +25,9 @@ class AdRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return string[]
+     *
+     * @psalm-return array{text: 'required', price: 'required|integer|min:0', limit: 'required|integer|min:0', banner: 'nullable|max:255'}
      */
     private function getRules(): array
     {

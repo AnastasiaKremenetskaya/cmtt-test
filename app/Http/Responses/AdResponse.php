@@ -8,9 +8,10 @@ class AdResponse
 {
     /**
      * @param Ad $ad
-     * @return string
+     *
+     * @return null
      */
-    public function getSuccessResponse(Ad $ad): string
+    public function getSuccessResponse(Ad $ad)
     {
         return response()->json([
             'message' => 'OK',
@@ -25,9 +26,10 @@ class AdResponse
 
     /**
      * @param array $errors
-     * @return string
+     *
+     * @return null
      */
-    public function getErrorResponse(array $errors): string
+    public function getErrorResponse(array $errors)
     {
         return response()->json([
             'message' => $errors,

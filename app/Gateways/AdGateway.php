@@ -12,8 +12,23 @@ use PDOException;
 
 class AdGateway
 {
+    /**
+     * @var PDO
+     */
     private $db;
+
+    /**
+     * @var string
+     *
+     * @psalm-var 'ads'
+     */
     private $tableName = 'ads';
+
+    /**
+     * @var string[]
+     *
+     * @psalm-var array{0: 'text', 1: 'price', 2: 'limit', 3: 'banner'}
+     */
     private $fillable = [
         'text',
         'price',

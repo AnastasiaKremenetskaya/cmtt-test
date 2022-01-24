@@ -8,6 +8,9 @@ use PDO;
 
 class DbConnection
 {
+    /**
+     * @var PDO
+     */
     private $connection;
 
     /**

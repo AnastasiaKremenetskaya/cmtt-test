@@ -10,7 +10,14 @@ use Exception;
 
 class AdController
 {
+    /**
+     * @var AdRequest
+     */
     private $adRequest;
+
+    /**
+     * @var AdResponse
+     */
     private $adResponse;
 
     public function __construct()

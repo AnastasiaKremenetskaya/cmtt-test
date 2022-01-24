@@ -29,6 +29,10 @@
     ]
   },
   "scripts": {
-    "test": "./vendor/bin/phpunit"
+    "test": "./vendor/bin/phpunit",
+    "lint": "vendor/bin/psalter --issues=all"
+  },
+  "require-dev": {
+    "vimeo/psalm": "^4.18"
   }
 }

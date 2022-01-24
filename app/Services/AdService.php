@@ -7,6 +7,9 @@ use App\Models\Ad;
 
 class AdService
 {
+    /**
+     * @var AdGateway
+     */
     private $adGateway;
 
     public function __construct()
