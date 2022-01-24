@@ -143,7 +143,7 @@ class AdGateway
     {
         $statement = "SELECT `id`, `text`, `banner` FROM $this->tableName
             WHERE `limit` > 0 
-            ORDER BY `price` desc LIMIT 1";
+            ORDER BY `price` desc, `limit` desc LIMIT 1";
 
         try {
             $statement = $this->db->query($statement);

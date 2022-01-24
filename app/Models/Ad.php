@@ -12,11 +12,11 @@ class Ad
 
     public function __construct(array $data = null)
     {
-        $this->id = $data['id'];
-        $this->text = $data['text'];
-        $this->price = $data['price'];
-        $this->limit = $data['limit'];
-        $this->banner = $data['banner'];
+        $this->id = $data['id'] ?? null;
+        $this->text = $data['text'] ?? null;
+        $this->price = $data['price'] ?? null;
+        $this->limit = $data['limit'] ?? null;
+        $this->banner = $data['banner'] ?? null;
     }
 
     /**

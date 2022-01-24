@@ -9,32 +9,32 @@ class AdResponse
     /**
      * @param Ad $ad
      *
-     * @return null
+     * @return string
      */
-    public function getSuccessResponse(Ad $ad)
+    public function getSuccessResponse(Ad $ad): string
     {
         return response()->json([
-            'message' => 'OK',
-            'code' => 200,
-            'data' => [
-                "id" => $ad->getId(),
-                "text" => $ad->getText(),
-                "banner" => $ad->getBanner(),
-            ],
-        ]);
+                                    'message' => 'OK',
+                                    'code' => 200,
+                                    'data' => [
+                                        "id" => $ad->getId(),
+                                        "text" => $ad->getText(),
+                                        "banner" => $ad->getBanner(),
+                                    ],
+                                ]);
     }
 
     /**
      * @param array $errors
      *
-     * @return null
+     * @return string
      */
-    public function getErrorResponse(array $errors)
+    public function getErrorResponse(array $errors): string
     {
         return response()->json([
-            'message' => $errors,
-            'code' => 400,
-            'data' => [],
-        ]);
+                                    'message' => $errors,
+                                    'code' => 400,
+                                    'data' => [],
+                                ]);
     }
 }
