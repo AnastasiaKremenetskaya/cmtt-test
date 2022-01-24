@@ -127,7 +127,7 @@ class AdGateway
             $statement->execute();
 
             return $this->getById($id);
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             throw new InternalServerException();
         }
     }

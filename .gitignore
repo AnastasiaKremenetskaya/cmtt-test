@@ -4,3 +4,4 @@
 .idea/
 /.bash_history
 /.cache/
+/.phpunit.result.cache
