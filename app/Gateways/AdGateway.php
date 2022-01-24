@@ -149,10 +149,10 @@ class AdGateway
             $statement = $this->db->query($statement);
             $adData = $statement->fetchAll()[0];
 
-            if (is_null($adData)) {
+            if (empty($adData)) {
                 throw new RecordNotFoundException(['status' => 'relevant']);
             }
-            return new Ad($statement->fetchAll()[0]);
+            return new Ad($adData);
         } catch (PDOException $e) {
             throw new InternalServerException();
         }

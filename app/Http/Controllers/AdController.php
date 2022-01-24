@@ -29,9 +29,9 @@ class AdController
     /**
      * Show most relevant ad
      *
-     * @return string|null
+     * @return string
      */
-    public function relevant(): ?string
+    public function relevant(): string
     {
         try {
             $ad = (new AdService())->getRelevantAd();
@@ -44,9 +44,9 @@ class AdController
     /**
      * Create ad
      *
-     * @return string|null
+     * @return string
      */
-    public function store(): ?string
+    public function store(): string
     {
         $validation = $this->adRequest->validate(input()->all());
 
@@ -68,9 +68,10 @@ class AdController
      * Edit ad
      *
      * @param mixed $id
-     * @return string|null
+     *
+     * @return string
      */
-    public function update($id): ?string
+    public function update($id): string
     {
         parse_str(file_get_contents('php://input'), $_PUT);
 
