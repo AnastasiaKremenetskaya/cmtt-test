@@ -3,8 +3,16 @@
 use Pecee\SimpleRouter\SimpleRouter;
 
 
-require __DIR__.'/../vendor/autoload.php';
-require_once __DIR__.'/../routes/web.php';
+require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../routes/web.php';
 
 // Start the routing
-SimpleRouter::start();
+try {
+    SimpleRouter::start();
+} catch (Exception $e) {
+    return response()->json([
+                                'message' => 'Not found',
+                                'code' => 404,
+                                'data' => [],
+                            ]);
+}
